@@ -4,9 +4,8 @@ const ctx = canvas.getContext('2d');
 // 상수 정의
 const SKY_COLOR = '#87CEEB';
 const SUN_COLOR = '#FFD700';
+const CLOUD_COLOR = '#FFFFFF';
 const GROUND_COLOR = '#228B22';
-const DOG_BODY_COLOR = '#A0522D';
-const DOG_ACCENT_COLOR = '#8B4513';
 
 const GROUND_HEIGHT = 60;
 
@@ -16,14 +15,24 @@ canvas.width = 800;
 canvas.height = 600;
 
 // 강아지 객체
+const dogImage = new Image();
+dogImage.src = 'dog.png'; // 프로젝트 폴더에 dog.png 파일을 넣어주세요.
+
 const dog = {
     x: canvas.width / 2 - 30,
     y: canvas.height - GROUND_HEIGHT - 70, // 땅 위에 있도록 y좌표 조정
-    width: 60,
-    height: 50,
+    width: 80, // 이미지 크기에 맞게 조절
+    height: 70, // 이미지 크기에 맞게 조절
     speed: 5,
     dx: 0 // x축 이동 방향
 };
+
+// 구름 배열
+const clouds = [
+    { x: 100, y: 120, radius: 30 },
+    { x: 300, y: 80, radius: 40 },
+    { x: 550, y: 150, radius: 35 },
+];
 
 // 키보드 입력 상태
 const keys = {
@@ -43,46 +52,32 @@ function drawBackground() {
     ctx.arc(canvas.width - 100, 100, 50, 0, Math.PI * 2);
     ctx.fill();
 
+    // 구름 그리기
+    drawClouds();
+
     // 땅
     ctx.fillStyle = GROUND_COLOR;
     ctx.fillRect(0, canvas.height - GROUND_HEIGHT, canvas.width, GROUND_HEIGHT);
 }
 
+// 구름 그리기 함수
+function drawClouds() {
+    ctx.fillStyle = CLOUD_COLOR;
+    clouds.forEach(cloud => {
+        ctx.beginPath();
+        ctx.arc(cloud.x, cloud.y, cloud.radius, 0, Math.PI * 2);
+        ctx.arc(cloud.x + 30, cloud.y + 10, cloud.radius, 0, Math.PI * 2);
+        ctx.arc(cloud.x - 20, cloud.y + 15, cloud.radius - 5, 0, Math.PI * 2);
+        ctx.fill();
+    });
+}
+
 // 강아지 그리기
 function drawDog() {
-    const { x, y, width, height } = dog;
-
-    // 머리 (몸통을 기준으로 상대적 위치 지정)
-    const headWidth = width * 0.5;
-    const headHeight = height * 0.6;
-    const headX = x - headWidth * 0.8;
-    const headY = y - headHeight * 0.2;
-    ctx.fillStyle = DOG_BODY_COLOR;
-    ctx.fillRect(headX, headY, headWidth, headHeight);
-
-    // 귀
-    ctx.fillStyle = DOG_ACCENT_COLOR;
-    ctx.beginPath();
-    ctx.moveTo(headX, headY);
-    ctx.lineTo(headX - 5, headY - 10);
-    ctx.lineTo(headX + 10, headY);
-    ctx.fill();
-
-    // 몸통
-    ctx.fillStyle = DOG_BODY_COLOR;
-    ctx.fillRect(x, y, width, height);
-
-    // 꼬리
-    ctx.beginPath();
-    ctx.moveTo(x + width, y + 10);
-    ctx.lineTo(x + width + 15, y);
-    ctx.strokeStyle = DOG_ACCENT_COLOR;
-    ctx.stroke();
-
-    // 다리
-    ctx.fillStyle = DOG_ACCENT_COLOR;
-    ctx.fillRect(x + 5, y + height, 10, 20);
-    ctx.fillRect(x + width - 15, y + height, 10, 20);
+    // 이미지를 캔버스에 그립니다.
+    // 캐릭터가 왼쪽을 보고 있다면 x좌표를 뒤집어 그릴 수 있습니다.
+    // 지금은 간단하게 이미지 그대로 그립니다.
+    ctx.drawImage(dogImage, dog.x, dog.y, dog.width, dog.height);
 }
 
 // 강아지 위치 업데이트
@@ -114,7 +109,12 @@ function update() {
     requestAnimationFrame(update);
 }
 
-// 키보드 이벤트 처리
+// 이미지가 모두 로드된 후 게임 시작
+dogImage.onload = () => {
+    update(); // 게임 시작
+};
+
+// 키보드 이벤트 처리 (이 부분은 변경 없습니다)
 function keyDown(e) {
     if (e.key === 'ArrowRight' || e.key === 'Right') {
         keys.right = true;
@@ -140,5 +140,3 @@ function keyUp(e) {
 
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
-
-update(); // 게임 시작

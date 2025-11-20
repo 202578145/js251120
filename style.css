@@ -1,13 +1,15 @@
 body {
-    display: flex; /* 캔버스를 중앙 정렬하기 위해 사용 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    height: 100vh; /* 뷰포트 전체 높이 사용 */
+    display: flex;
+    flex-direction: column; /* 요소들을 세로로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 (콘텐츠가 적을 경우) */
     margin: 0;
-    background-color: #f0f0f0; /* 배경색을 연한 회색으로 설정 */
+    background-color: #f0f0f0;
+    font-family: sans-serif;
 }
 
 /* app.js에서 ID를 'gameCanvas'로 설정했으므로, CSS도 맞춰줍니다. */
 #gameCanvas {
     border: 2px solid #333; /* 캔버스 테두리 */
+    background-color: #fff;
 }
