@@ -16,7 +16,7 @@ canvas.height = 600;
 
 // 강아지 객체
 const dogImage = new Image();
-dogImage.src = 'pomeranian.png'; // 가지고 계신 파일 이름으로 변경!
+dogImage.src = 'dog.png';
 
 const dog = {
     x: canvas.width / 2 - 30,
