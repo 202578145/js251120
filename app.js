@@ -43,8 +43,8 @@ const keys = {
 // 낮 배경 그리기
 function drawBackground() {
     // 하늘
-    ctx.fillStyle = SKY_COLOR;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // ctx.fillStyle = SKY_COLOR;
+    // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // 태양
     ctx.fillStyle = SUN_COLOR;
