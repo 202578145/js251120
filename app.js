@@ -16,7 +16,7 @@ canvas.height = 600;
 
 // 강아지 객체
 const dogImage = new Image();
-dogImage.src = 'dog.png';
+dogImage.src = 'image.png';
 
 const dog = {
     x: canvas.width / 2 - 30,
