@@ -15,14 +15,14 @@ canvas.width = 800;
 canvas.height = 600;
 
 // 강아지 객체
-const dogImage = new Image();
-dogImage.src = 'image.png?v=1';
+const puppyImage = new Image();
+puppyImage.src = 'puppy.png?v=1';
 
 const dog = {
     x: canvas.width / 2 - 30,
     y: canvas.height - GROUND_HEIGHT - 70, // 땅 위에 있도록 y좌표 조정
-    width: 80, // 이미지 크기에 맞게 조절
-    height: 70, // 이미지 크기에 맞게 조절
+    width: 80, // 강아지 이미지 크기에 맞게 조절
+    height: 70, // 강아지 이미지 크기에 맞게 조절
     speed: 5,
     dx: 0 // x축 이동 방향
 };
@@ -74,10 +74,10 @@ function drawClouds() {
 
 // 강아지 그리기
 function drawDog() {
-    // 이미지를 캔버스에 그립니다.
+    // 강아지 이미지를 캔버스에 그립니다.
     // 캐릭터가 왼쪽을 보고 있다면 x좌표를 뒤집어 그릴 수 있습니다.
-    // 지금은 간단하게 이미지 그대로 그립니다.
-    ctx.drawImage(dogImage, dog.x, dog.y, dog.width, dog.height);
+    // 지금은 간단하게 강아지 이미지 그대로 그립니다.
+    ctx.drawImage(puppyImage, dog.x, dog.y, dog.width, dog.height);
 }
 
 // 강아지 위치 업데이트
@@ -109,8 +109,8 @@ function update() {
     requestAnimationFrame(update);
 }
 
-// 이미지가 모두 로드된 후 게임 시작
-dogImage.onload = () => {
+// 강아지 이미지가 모두 로드된 후 게임 시작
+puppyImage.onload = () => {
     update(); // 게임 시작
 };
 
