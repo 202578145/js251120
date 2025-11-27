@@ -8,6 +8,8 @@ const CLOUD_COLOR = '#FFFFFF';
 const GROUND_COLOR = '#228B22';
 
 const GROUND_HEIGHT = 60;
+const GRAVITY = 0.8; // 중력 값
+const JUMP_STRENGTH = 18; // 점프 세기
 
 
 // 캔버스 크기 설정
@@ -24,7 +26,9 @@ const dog = {
     width: 80, // 강아지 이미지 크기에 맞게 조절
     height: 70, // 강아지 이미지 크기에 맞게 조절
     speed: 5,
-    dx: 0 // x축 이동 방향
+    dx: 0, // x축 이동 방향
+    dy: 0, // y축 이동 방향 (점프를 위해 추가)
+    isJumping: false // 점프 상태 (중복 점프 방지)
 };
 
 // 구름 배열
@@ -37,7 +41,8 @@ const clouds = [
 // 키보드 입력 상태
 const keys = {
     right: false,
-    left: false
+    left: false,
+    up: false
 };
 
 // 낮 배경 그리기
@@ -83,6 +88,12 @@ function drawDog() {
 // 강아지 위치 업데이트
 function moveDog() {
     dog.x += dog.dx;
+    dog.y += dog.dy;
+
+    // 강아지가 점프 중일 때만 중력 적용
+    if (dog.isJumping) {
+        dog.dy += GRAVITY;
+    }
 
     // 화면 경계 처리
     if (dog.x < 0) {
@@ -90,6 +101,12 @@ function moveDog() {
     }
     if (dog.x + dog.width > canvas.width) {
         dog.x = canvas.width - dog.width;
+    }
+    // 땅에 닿았을 때 처리
+    if (dog.y + dog.height > canvas.height - GROUND_HEIGHT) {
+        dog.y = canvas.height - GROUND_HEIGHT - dog.height;
+        dog.dy = 0;
+        dog.isJumping = false;
     }
 }
 
@@ -116,12 +133,17 @@ puppyImage.onload = () => {
 
 // 키보드 이벤트 처리 (이 부분은 변경 없습니다)
 function keyDown(e) {
-    if (e.key === 'ArrowRight' || e.key === 'Right') {
+    if ((e.key === 'ArrowRight' || e.key === 'Right')) {
         keys.right = true;
         dog.dx = dog.speed;
     } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
         keys.left = true;
         dog.dx = -dog.speed;
+    } else if ((e.key === 'ArrowUp' || e.key === 'Up' || e.key === ' ') && !dog.isJumping) {
+        // 스페이스바 또는 위쪽 화살표를 누르고, 점프 중이 아닐 때 점프
+        keys.up = true;
+        dog.isJumping = true;
+        dog.dy = -JUMP_STRENGTH;
     }
 }
 
@@ -130,6 +152,8 @@ function keyUp(e) {
         keys.right = false;
     } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
         keys.left = false;
+    } else if (e.key === 'ArrowUp' || e.key === 'Up' || e.key === ' ') {
+        keys.up = false;
     }
 
     // 양쪽 키가 모두 떼졌을 때만 멈춤
