@@ -28,7 +28,8 @@ const dog = {
     speed: 5,
     dx: 0, // x축 이동 방향
     dy: 0, // y축 이동 방향 (점프를 위해 추가)
-    isJumping: false // 점프 상태 (중복 점프 방지)
+    isJumping: false, // 점프 상태 (중복 점프 방지)
+    direction: 'right' // 바라보는 방향 추가 (기본값: 오른쪽)
 };
 
 // 구름 배열
@@ -79,10 +80,27 @@ function drawClouds() {
 
 // 강아지 그리기
 function drawDog() {
-    // 강아지 이미지를 캔버스에 그립니다.
-    // 캐릭터가 왼쪽을 보고 있다면 x좌표를 뒤집어 그릴 수 있습니다.
-    // 지금은 간단하게 강아지 이미지 그대로 그립니다.
-    ctx.drawImage(puppyImage, dog.x, dog.y, dog.width, dog.height);
+    ctx.save(); // 현재 캔버스 상태(변환, 스타일 등)를 저장합니다.
+
+    if (dog.direction === 'left') {
+        // 캔버스의 축을 좌우 반전시킵니다.
+        ctx.scale(-1, 1);
+        // 반전된 축에서 이미지를 그립니다. 위치 계산이 조금 복잡해집니다.
+        // 이미지의 오른쪽 끝을 기준으로 위치를 잡아야 하므로 (-강아지 x좌표 - 강아지 너비)가 새로운 x좌표가 됩니다.
+        ctx.drawImage(puppyImage, -dog.x - dog.width, dog.y, dog.width, dog.height);
+    } else {
+        // 오른쪽을 볼 때는 원래대로 그립니다.
+        ctx.drawImage(puppyImage, dog.x, dog.y, dog.width, dog.height);
+    }
+    ctx.restore(); // save() 시점에 저장했던 캔버스 상태로 되돌립니다.
+}
+
+// 조작법 안내 그리기
+function drawInstructions() {
+    ctx.fillStyle = 'black';
+    ctx.font = '16px Arial';
+    ctx.fillText('이동: ← →', 10, 25);
+    ctx.fillText('점프: ↑ 또는 Space', 10, 45);
 }
 
 // 강아지 위치 업데이트
@@ -120,6 +138,7 @@ function update() {
     clear();
 
     drawBackground();
+    drawInstructions();
     drawDog();
     moveDog();
 
@@ -136,9 +155,11 @@ function keyDown(e) {
     if ((e.key === 'ArrowRight' || e.key === 'Right')) {
         keys.right = true;
         dog.dx = dog.speed;
+        dog.direction = 'right'; // 방향을 오른쪽으로 설정
     } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
         keys.left = true;
         dog.dx = -dog.speed;
+        dog.direction = 'left'; // 방향을 왼쪽으로 설정
     } else if ((e.key === 'ArrowUp' || e.key === 'Up' || e.key === ' ') && !dog.isJumping) {
         // 스페이스바 또는 위쪽 화살표를 누르고, 점프 중이 아닐 때 점프
         keys.up = true;
